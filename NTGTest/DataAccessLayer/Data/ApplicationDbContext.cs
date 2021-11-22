@@ -11,6 +11,9 @@ namespace NTGTest.DataAccessLayer.Data
            : base(options)
         {
         }
+
+        
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
           
