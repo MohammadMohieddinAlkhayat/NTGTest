@@ -11,6 +11,7 @@ namespace NTGTest.DataAccessLayer.Repositories.CRepositories
 {
     public class BaseRepository<DbModel> : IBaseRepository<DbModel> where DbModel : class
     {
+
         #region protected Attributes
         protected ApplicationDbContext _db { get; }
         private DbSet<DbModel> _dbSet { get; }
@@ -20,6 +21,15 @@ namespace NTGTest.DataAccessLayer.Repositories.CRepositories
         {
             get;
             set;
+        }
+
+        public BaseRepository(ApplicationDbContext db)
+        {
+            this._db = db;
+            _dbSet = db?.Set<DbModel>();
+            DBQueryable = _dbSet.AsQueryable();
+
+            //loadFirstLevel();
         }
         public void Delete(int id)
         {
