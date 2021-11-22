@@ -12,17 +12,16 @@ namespace NTGTest.Controllers
 {
     public class EmployeeController : ControllerBase
     {
-        private readonly IUnitOfWork unitOfWork;
-        public EmployeeController(IUnitOfWork e)
+        private readonly IUnitOfWork _unitOfWork;
+        public EmployeeController(IUnitOfWork unitOfWork)
         {
-            unitOfWork = e;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         public IEnumerable<Employee> Index()
         {
-           var x= unitOfWork.EmployeeRepository.GetAll();
-            return x;
+            return _unitOfWork.EmployeeRepository.GetAll().ToArray(); 
         }
     }
 }
