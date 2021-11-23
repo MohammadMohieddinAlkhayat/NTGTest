@@ -1,32 +1,65 @@
-import React, { Component } from 'react';
-import { EmployeeModal } from './EmployeeModal';
-export class Home extends Component {
-  static displayName = Home.name;
+import React, { Component, useState, useEffect} from 'react';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter,Input, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from "reactstrap";
 
-   constructor(props) {
-        super(props);
-        this.state = { employees: [], loading: true };
+
+
+
+export function Home() {
+    // Declare a new state variable, which we'll call "count"
+    const [employees, setEmployees] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+
+  
+          useEffect(() => {
+              populateEmployeesData()
+          });
+
+    const populateEmployeesData = async () => {
+        const response = await fetch('Employee/Index');
+        const data = await response.json();
+        setEmployees(data);
+        setLoading(false);
     }
 
-    componentDidMount() {
-        this.populateEmployeesData();
-    }
-    handleClick = () => {
-        EmployeeModal.setState({
-            show: true
-        });
-    }
 
+    return (
+        <div>
+            <div>
+                <Button className="mb-3 mt-3" color="danger" onClick={() => setIsOpen(true)}> AssignJob</Button>
+                <Modal isOpen={isOpen} toggle={() => setIsOpen(prev => !prev)}>
+                    <ModalHeader toggle={() => setIsOpen(false)}>
+                        Assign Job
+                    </ModalHeader>
+                    <ModalBody>
+                        <Dropdown className="mb-3" isOpen={isDropDownOpen} toggle={() => setIsDropDownOpen((prev) => !prev)}>
+                            <DropdownToggle caret >
+                                Employee Name
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                {employees.map(employee => (<DropdownItem key={employee.id} >
+                                    {employee.fullName}
+                                </DropdownItem>))}
+                            </DropdownMenu>
+                        </Dropdown>
+                        <Input/>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" onClick={function noRefCheck() { }}> submit</Button>
+                        {' '}
+                        <Button onClick={() => setIsOpen(false)}>Cancel</Button>
+                    </ModalFooter>
+                </Modal>
+            </div>
 
-    static renderEmployeesTable(employees) {
-        return (
             <table className='table table-striped' aria-labelledby="tabelLabel">
                 <thead>
                     <tr>
                         <th>Id</th>
                         <th>Full Name</th>
                         <th>Phone Number</th>
-                       
+
                     </tr>
                 </thead>
                 <tbody>
@@ -39,33 +72,11 @@ export class Home extends Component {
                     )}
                 </tbody>
             </table>
-        );
-    }
-  render () {
-      let contents = this.state.loading
-          ? <p><em>Loading...</em></p>
-          : Home.renderEmployeesTable(this.state.employees);
-      return (
-          <div>
-              <button onClick={this.handleClick}>
-                  Assign Job
-              </button>
-              <h1 id="tabelLabel" >Employees</h1>
-              {contents}
-          </div>
-      );
-    }
 
-
-
-    async populateEmployeesData() {
-        const response = await fetch('Employee/Index');
-        const data = await response.json();
-        console.log(data);
-        this.setState({ employees: data, loading: false });
-    }
-
-
-
-
+        </div>
+    );
 }
+
+
+
+
